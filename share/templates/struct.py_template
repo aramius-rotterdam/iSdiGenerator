@@ -1,0 +1,15 @@
+/**
+ * @class      {StructName}
+ * @brief      {StructBrief}
+ * @author     {Author}
+ * @version    0.1
+ * @date       {GenerationDate}
+ */
+class {StructName}
+{
+public:
+    {StructMethods}
+
+private:
+    {StructAttributes}
+};

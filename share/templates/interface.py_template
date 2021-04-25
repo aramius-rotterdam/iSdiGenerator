@@ -1,0 +1,37 @@
+/**
+ * Gerenarted by iSdiGenerator (DO NOT MODIFY)
+ * @file: {InterfaceName}.hpp
+ * @author: {Author} 
+ * @date: {GenerationDate}
+ */
+
+#ifndef {InterfaceName_UpperCase}_HPP_
+#define {InterfaceName_UpperCase}_HPP_
+
+#include <limits>
+{IncludedInterfaces}
+
+/**
+ * @class      {InterfaceName}
+ * @brief      {InterfaceBrief}
+ * @author     {Author}
+ * @version    0.1
+ * @date       {GenerationDate}
+ */
+class {InterfaceName} {InhiretedInterface}
+{{
+public:
+    /**
+     * Types' definition.
+     */
+{InterfaceTypes}
+
+{InterfaceMethods}
+
+private:
+{InterfaceStructs}
+
+{InterfaceAttributes}
+}};
+
+#endif // {InterfaceName_UpperCase}_HPP_
