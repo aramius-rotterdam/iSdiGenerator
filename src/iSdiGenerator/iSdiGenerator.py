@@ -3,7 +3,7 @@
 ################################################################################
 # iSdiGenerator.py
 # 
-# Copyright 2016 ArAmIuS de Rotterdam <bchowa@gmail.com>
+# Copyright (c) 2021 ArAmIuS de Rotterdam <bchowa@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 ################################################################################
 # imports
 ################################################################################
-from SdiArgumentsChecker import SdiArgumentsChecker
+from SdiArgumentsChecker import SdiArgumentsChecker, Action
 from SdiInterfaceParser import SdiInterfaceParser
 from SdiErrorsCollector import SdiErrorsCollector
 
@@ -36,15 +36,19 @@ from SdiErrorsCollector import SdiErrorsCollector
 if("__main__" == __name__):
     inputArguments = {}
 
-    if(True == SdiArgumentsChecker.Check(inputArguments)):
+    if(Action.E_ACTION_GENERATE == SdiArgumentsChecker.Check(inputArguments)):
+
         interfaceParser = SdiInterfaceParser(inputArguments["sdiFileName"])
         errorsCollector = SdiErrorsCollector()
 
         if(True == interfaceParser.checkSyntax(errorsCollector)):
-            interfaceParser.build()
+            interfaceParser.build(inputArguments["outputDirectory"])
         else:
             errorsCollector.printErrors()
+            
+    elif(Action.E_ACTION_IMPORT_SDI_LIB == SdiArgumentsChecker.Check(
+                                                               inputArguments)):
+        print("import")
     else:
         SdiArgumentsChecker.PrintSynopsis()
-        exit(2)
         

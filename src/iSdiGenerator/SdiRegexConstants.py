@@ -1,7 +1,7 @@
 ################################################################################
 # SdiRegexConstants.py
 # 
-# Copyright 2016 ArAmIuS de Rotterdam <bchowa@gmail.com>
+# Copyright (c) 2021 ArAmIuS de Rotterdam <bchowa@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,17 +37,18 @@ class SdiRegexConstants:
         self.CCompleteInclude = "#include(([ \\t]+)<(.+)>)"
         self.CFileInclude = "([A-Za-z0-9]+)\\.sdi"
         self.CDirectivePragma = "#pragma"
-        self.CCompletePragmaRange = "#pragma(([ \\t]+)([A-Za-z0-9]+)([ \\t]+)((\\[)([ \\t]*)([0-9]+)([ \\t]*)(\\-)([ \\t]*)([0-9]+)([ \\t]*)(\\])))"
-        self.CCompletePragmaDefault = "#pragma(([ \\t]+)([A-Za-z0-9]+)([ \\t]+)((\\[)(default\\:)([ \\t]*)([0-9]+)(\\])))"
-        self.CSyntaxInterface = "interface([ \\t]+)([A-Za-z0-9]+)([ \\t]*)([\\{]*)"
-        self.COpeningBracket = "{"
-        self.CClosingBracket = "}"
-        self.CSemiColon = ";"
-        self.CSpace = " "
-        self.CCarriageReturn = "\n"
+        self.CCompletePragmaRange = "#pragma(([ \\t]+)([\\_A-Za-z0-9]+)([ \\t]+)"
+        self.CCompletePragmaRange += "((\\[)([ \\t]*)([0-9]+)([ \\t]*)(\\-)([ \\t]*)"
+        self.CCompletePragmaRange += "([0-9]+)([ \\t]*)(\\])))"
+        self.CCompletePragmaDefault = "#pragma(([ \\t]+)([\\_A-Za-z0-9]+)([ \\t]+)"
+        self.CCompletePragmaDefault += "((\\[)(default\\:)([ \\t]*)([0-9]+)(\\])))"
+        self.CSyntaxInterface = "interface([ \\t]+)([\\_A-Za-z0-9]+)([ \\t]*)([\\{]*)$"
+        self.CSyntaxStruct = "struct([ \\t]+)([\\_A-Za-z0-9]+)([ \\t]*)([\\{]*)$"
         self.CTypedefBeginning = "typedef(.*)"
-        self.CSyntaxTypedef = "typedef((([ \\t]+)([:<>A-Za-z0-9]+))+)(([ \\t]+)([A-Za-z0-9]+))(([ \\t]*);)"
-        self.CSyntaxBasicTypesMap = {
+        self.CSyntaxTypedef = "typedef((([ \\t]+)([\\:\\<\\>\\_A-Za-z0-9]+))+)"
+        self.CSyntaxTypedef += "(([ \\t]+)([\\_A-Za-z0-9]+))(([ \\t]*)(\\;))"
+        
+        syntaxBasicNumericTypesMap = {
             "UChar": "(unsigned([ \\t]+)char)",
             "Char": "(char)",
             "SChar": "(signed([ \\t]+)char)",
@@ -78,32 +79,48 @@ class SdiRegexConstants:
             "Size": "(__SIZE_TYPE__)",
             "StdString": "(std::string)"
         }
+        typeCounter = 0
+        syntaxBasicNumericTypes = "("
+        for key in syntaxBasicNumericTypesMap:
+            if(0 < typeCounter):
+                syntaxBasicNumericTypes += "|"
+            syntaxBasicNumericTypes += syntaxBasicNumericTypesMap[key]
+            typeCounter += 1
+        syntaxBasicNumericTypes += ")"
+        self.CSyntaxBasicTypes = "^("
+        self.CSyntaxBasicTypes += "((bool)|" + syntaxBasicNumericTypes + ")"
+        self.CSyntaxBasicTypes += ")$"
         self.CSyntaxVector = "std::vector<(.+)>"
 
-        self.CSyntaxBasicTypes = "^("
-        typeCounter = 0
-        syntaxBasicTypes = "("
-        for key in self.CSyntaxBasicTypesMap:
-            if(0 < typeCounter):
-                syntaxBasicTypes += "|"
-            syntaxBasicTypes += self.CSyntaxBasicTypesMap[key]
-            typeCounter += 1
-        syntaxBasicTypes += ")"
-        self.CSyntaxBasicTypes += syntaxBasicTypes
-        self.CSyntaxBasicTypes += ")$"
-
-        sdiRange = "(([0-9]+)|"
-        sdiRange += "(std\\:\\:numeric\\_limits\\<"
-        sdiRange += syntaxBasicTypes 
-        sdiRange += "\\>\\:\\:min\\(\\))|"
-        sdiRange += "(std\\:\\:numeric\\_limits\\<" 
-        sdiRange += syntaxBasicTypes
-        sdiRange += "\\>\\:\\:max\\(\\)))"
+        sdiNumberRange = "(([0-9]+)|"
+        sdiNumberRange += "(std\\:\\:numeric\\_limits\\<"
+        sdiNumberRange += syntaxBasicNumericTypes 
+        sdiNumberRange += "\\>\\:\\:min\\(\\))|"
+        sdiNumberRange += "(std\\:\\:numeric\\_limits\\<" 
+        sdiNumberRange += syntaxBasicNumericTypes
+        sdiNumberRange += "\\>\\:\\:max\\(\\)))"
         self.CSdiNumber = "(?P<SdiNumber>SdiNumber\\<"
-        self.CSdiNumber += syntaxBasicTypes + "\\, )"
-        self.CSdiNumber += "(?P<MinNumber>" + sdiRange + "\\, )"
-        self.CSdiNumber += "(?P<MaxNumber>" + sdiRange + "\\, )"
+        self.CSdiNumber += syntaxBasicNumericTypes + "\\, )"
+        self.CSdiNumber += "(?P<MinNumber>" + sdiNumberRange + "\\, )"
+        self.CSdiNumber += "(?P<MaxNumber>" + sdiNumberRange + "\\, )"
         self.CSdiNumber += "(?P<DefaultNumber>([0-9]+)\\>)"
+        self.CSyntaxProperty = "((bool)|" + syntaxBasicNumericTypes + "|(" + self.CSyntaxVector + ")|([\\_A-Za-z0-9]+))"
+        self.CSyntaxProperty += "([ \t]+)([\\_A-Za-z0-9]+)([ \t]*)(\\;)$"
+        self.CSyntaxPropertyName = "((?P<Prefix>m\\_)(?P<Property>[A-Za-z0-9]+))"
+        self.CSyntaxInterfaceProperties = "properties([ \\t]*)([\\{]*)$"
+
+        self.COpeningBracket = "{"
+        self.CClosingBracket = "}"
+        self.CSemiColon = ";"
+        self.CSpace = " "
+        self.CSlash = "/"
+        self.CCarriageReturn = "\n"
+        self.CItemInterface = "Interface"
+        self.CItemStruct = "Struct"
+        self.CItemInterfaceProperties="InterfaceProperties"
+        self.CExtensionSdi = ".sdi"
+        self.CExtensionHpp = ".hpp"
+        self.CExtensionCpp = ".cpp"
         
 
     

@@ -1,7 +1,7 @@
 ################################################################################
 # SdiArgumentsChecker.py
 # 
-# Copyright 2016 ArAmIuS de Rotterdam <bchowa@gmail.com>
+# Copyright (c) 2021 ArAmIuS de Rotterdam <bchowa@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,13 +25,31 @@
 # imports
 ################################################################################
 import getopt, sys, os
+from enum import Enum
 from termcolor import colored, cprint
 
 ################################################################################
+# Class Action
+################################################################################
+class Action(Enum):
+    E_ACTION_NONE = 0,
+    E_ACTION_GENERATE = 1,
+    E_ACTION_GENERATE_FORCE = 2,
+    E_ACTION_IMPORT_SDI_LIB = 3,
+    E_ACTION_IMPORT_SDI_LIB_FORCE = 4
+
+################################################################################
 # Class SdiArgumentsChecker
-# 
 ################################################################################
 class SdiArgumentsChecker:
+    ############################################################################
+    # __PrintError
+    ############################################################################
+    @staticmethod
+    def __PrintError(errorMsg):
+        print(errorMsg)
+        exit(2)
+        
     ############################################################################
     # PrintSynopsis 
     ############################################################################
@@ -72,12 +90,16 @@ class SdiArgumentsChecker:
               14 * space + 
               "generates the C++ file from SDI files.")
 
+        exit(2)
+
+
     ############################################################################
     # Check
     ############################################################################
     @staticmethod
     def Check(inputArguments):
-        oResult = False
+        oResult = Action.E_ACTION_NONE
+        isForced = False
         appError = sys.argv[0] + ": "
         notExistError = ": No such file or directory."
         notSdiFile = ": It is not a SDI file."
@@ -93,39 +115,68 @@ class SdiArgumentsChecker:
         except getopt.GetoptError as errorMsg:
             cprint(errorMsg, "red")
             SdiArgumentsChecker.PrintSynopsis()
-            exit(2)
     
         for option in(optionsList):
             if(option[0] in("-h", "--help")):
                 SdiArgumentsChecker.PrintSynopsis()
             elif(option[0] in("-f", "--force")):
-                SdiArgumentsChecker.PrintSynopsis()
+                isForced = True
             elif(option[0] in("-i", "--import-sdi-lib")):
+
                 if(1 == len(argumentsList)):
+
                     if(True == os.path.isdir(argumentsList[0])):
-                        print(argumentsList[0])
-                        oResult = True
+
+                        if(False == isForced):
+                            oResult = Action.E_ACTION_IMPORT_SDI_LIB
+                        else:
+                            oResult = Action.E_ACTION_IMPORT_SDI_LIB_FORCE
+
                     else:
-                        print(appError + argumentsList[0] + notExistError)
+                        SdiArgumentsChecker.__PrintError(appError + 
+                                                         argumentsList[0] + 
+                                                         notExistError)
+
                 else:
                     SdiArgumentsChecker.PrintSynopsis()
+                    
+
             elif(option[0] in("-g", "--generate")):
                 if(2 == len(argumentsList)):
+
                     if(True == os.path.isfile(argumentsList[0]) and 
                        True == os.path.isdir(argumentsList[1])):
+
                         file = os.path.splitext(argumentsList[0])
+
                         if(".sdi" == file[1]):
+                            
                             inputArguments["sdiFileName"] = argumentsList[0]
-                            inputArguments["sdiDirectory"] = argumentsList[1]
-                            oResult = True
+                            inputArguments["outputDirectory"] = argumentsList[1]
+
+                            if(False == isForced):
+                                oResult = Action.E_ACTION_GENERATE
+                            else:
+                                oResult = Action.E_ACTION_GENERATE_FORCE
+
                         else:
-                            print(appError + argumentsList[0] + notSdiFile)
+                            SdiArgumentsChecker.__PrintError(appError + 
+                                                             argumentsList[0] + 
+                                                             notSdiFile)
+
                     elif(True == os.path.isdir(argumentsList[1])):
-                        print(appError + argumentsList[0] + notExistError)
+                        SdiArgumentsChecker.__PrintError(appError + 
+                                                         argumentsList[0] + 
+                                                         notExistError)
+
                     else:
-                        print(appError + argumentsList[1] + notExistError)
+                        SdiArgumentsChecker.__PrintError(appError + 
+                                                         argumentsList[1] + 
+                                                         notExistError)
+
                 else:
                     SdiArgumentsChecker.PrintSynopsis()
+
             else:
                 cprint(notOptionError, "red")
     

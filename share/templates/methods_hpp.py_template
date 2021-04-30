@@ -1,0 +1,23 @@
+{Indented}    /**
+{Indented}     * Generated attribute: get{MethodName}
+{Indented}     * @author     {Author}
+{Indented}     * @version    0.1
+{Indented}     * @date       {GenerationDate}
+{Indented}     * @return     Returns the value from '{PropertyName}'
+{Indented}     */
+{Indented}    const {PropertyType} &get{MethodName}(void)
+{Indented}    {{
+{Indented}        return {PropertyName};
+{Indented}    }}
+
+{Indented}    /**
+{Indented}     * Generated method: set{MethodName}
+{Indented}     * @author     {Author}
+{Indented}     * @version    0.1
+{Indented}     * @date       {GenerationDate}
+{Indented}     * @param      iValue The value to set into '{PropertyName}'
+{Indented}     */
+{Indented}    void set{MethodName}(const {PropertyType} &iValue)
+{Indented}    {{
+{Indented}        {PropertyName} = iValue;
+{Indented}    }}

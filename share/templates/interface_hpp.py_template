@@ -8,12 +8,15 @@
 #ifndef {InterfaceName_UpperCase}_HPP_
 #define {InterfaceName_UpperCase}_HPP_
 
-#include <limits>
 {IncludedInterfaces}
+#include <SdiNumber.hpp>
+#include <string>
+#include <vector>
+#include <limits>
 
 /**
  * @class      {InterfaceName}
- * @brief      {InterfaceBrief}
+ * @brief      {Brief}
  * @author     {Author}
  * @version    0.1
  * @date       {GenerationDate}
@@ -22,15 +25,13 @@ class {InterfaceName} {InhiretedInterface}
 {{
 public:
     /**
-     * Types' definition.
+     * Types' definition from basic types.
      */
 {InterfaceTypes}
-
+{InterfaceStructs}
 {InterfaceMethods}
 
 private:
-{InterfaceStructs}
-
 {InterfaceAttributes}
 }};
 

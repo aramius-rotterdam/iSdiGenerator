@@ -1,0 +1,21 @@
+    
+    /**
+     * @class      {StructName}
+     * @brief      {Brief}
+     * @author     {Author}
+     * @version    0.1
+     * @date       {GenerationDate}
+     */
+    class {StructName}
+    {{
+    public:
+{StructMethods}
+
+    private:
+{StructAttributes}
+    }};
+
+    /**
+     * Types' definition from {StructName}.
+     */
+{InterfaceTypes}

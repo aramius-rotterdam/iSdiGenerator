@@ -1,0 +1,4 @@
+{Indented}    /**
+{Indented}     * Generated attribute: {PropertyName}
+{Indented}     */
+{Indented}    {PropertyType} {PropertyName};
