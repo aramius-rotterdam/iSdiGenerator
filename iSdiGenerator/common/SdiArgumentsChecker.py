@@ -25,18 +25,8 @@
 # imports
 ################################################################################
 import getopt, sys, os
-from enum import Enum
 from termcolor import colored, cprint
-
-################################################################################
-# Class Action
-################################################################################
-class Action(Enum):
-    E_ACTION_NONE = 0,
-    E_ACTION_GENERATE = 1,
-    E_ACTION_GENERATE_FORCE = 2,
-    E_ACTION_IMPORT_SDI_LIB = 3,
-    E_ACTION_IMPORT_SDI_LIB_FORCE = 4
+from iSdiGenerator.common.SdiAppAction import SdiAppAction
 
 ################################################################################
 # Class SdiArgumentsChecker
@@ -98,7 +88,7 @@ class SdiArgumentsChecker:
     ############################################################################
     @staticmethod
     def Check(inputArguments):
-        oResult = Action.E_ACTION_NONE
+        oResult = SdiAppAction.E_APP_ACTION_NONE
         isForced = False
         appError = sys.argv[0] + ": "
         notExistError = ": No such file or directory."
@@ -128,9 +118,9 @@ class SdiArgumentsChecker:
                     if(True == os.path.isdir(argumentsList[0])):
 
                         if(False == isForced):
-                            oResult = Action.E_ACTION_IMPORT_SDI_LIB
+                            oResult = SdiAppAction.E_APP_ACTION_IMPORT_SDI_LIB
                         else:
-                            oResult = Action.E_ACTION_IMPORT_SDI_LIB_FORCE
+                            oResult = SdiAppAction.E_APP_ACTION_IMPORT_SDI_LIB_FORCE
 
                     else:
                         SdiArgumentsChecker.__PrintError(appError + 
@@ -155,9 +145,9 @@ class SdiArgumentsChecker:
                             inputArguments["outputDirectory"] = argumentsList[1]
 
                             if(False == isForced):
-                                oResult = Action.E_ACTION_GENERATE
+                                oResult = SdiAppAction.E_APP_ACTION_GENERATE
                             else:
-                                oResult = Action.E_ACTION_GENERATE_FORCE
+                                oResult = SdiAppAction.E_APP_ACTION_GENERATE_FORCE
 
                         else:
                             SdiArgumentsChecker.__PrintError(appError + 

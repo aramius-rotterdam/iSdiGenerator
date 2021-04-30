@@ -20,7 +20,7 @@ setuptools.setup(
         "License :: OSI Approved :: GPL-3.0 License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
+    package_dir={"": "iSdiGenerator"},
+    packages=setuptools.find_packages(where="iSdiGenerator"),
     python_requires=">=3.6",
 )

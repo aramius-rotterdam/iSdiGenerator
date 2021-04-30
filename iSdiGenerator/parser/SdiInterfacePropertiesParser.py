@@ -25,8 +25,8 @@
 # imports
 ################################################################################
 import re
-from SdiParserBase import SdiParserBase
-from SdiErrorsCollector import Errno
+from iSdiGenerator.common.SdiErrorsCollector import SdiErrno
+from iSdiGenerator.parser.SdiParserBase import SdiParserBase
 
 ################################################################################
 # Class SdiInterfacePropertiesParser
@@ -67,7 +67,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
             False == syntaxIndicatorsMap["isInterfaceProperties"] and
             False == syntaxIndicatorsMap["isProperty"] and
             False == syntaxIndicatorsMap["isOpeneningBracket"] and
-            Errno.E_ERRNO_NONE == errno):
+            SdiErrno.E_ERRNO_NONE == errno):
 
             oResult = True
 
@@ -80,7 +80,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                                         line, 
                                         regexMap, 
                                         syntaxIndicatorsMap):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
         syntaxPropertyMatch = regexMap["syntaxProperty"].match(line)
 
         if((self.regexConstants.CClosingBracket +
@@ -119,7 +119,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                             syntaxIndicatorsMap["isProperty"] = True
 
                         else:
-                            oResult = Errno.E_ERRNO_DATA_TYPE_NOT_EXIST
+                            oResult = SdiErrno.E_ERRNO_DATA_TYPE_NOT_EXIST
 
                     elif(True == self.__interfaceBuilder.isTypeDefinitionExist(
                                                          propertyType.strip())):
@@ -128,11 +128,11 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                                                         propertyType)
                         syntaxIndicatorsMap["isProperty"] = True
                     else:
-                        oResult = Errno.E_ERRNO_DATA_TYPE_NOT_EXIST
+                        oResult = SdiErrno.E_ERRNO_DATA_TYPE_NOT_EXIST
                 else:
-                    oResult = Errno.E_ERRNO_INTERFACE_PROPERTY_DUPLICATED
+                    oResult = SdiErrno.E_ERRNO_INTERFACE_PROPERTY_DUPLICATED
             else:
-                oResult = Errno.E_ERRNO_INTERFACE_PROPERTY_NAME_MALFORMED
+                oResult = SdiErrno.E_ERRNO_INTERFACE_PROPERTY_NAME_MALFORMED
         
         elif(self.regexConstants.CClosingBracket +
              self.regexConstants.CSemiColon == line):
@@ -144,7 +144,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
     # checkSyntax
     ############################################################################
     def checkSyntax(self, fileLines, lineOffset):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
         regexMap = {
             "inlineComment": re.compile(self.regexConstants.CInlineComment),
             "openingMultiComment": re.compile(
@@ -193,7 +193,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                 # Checks the interface properties was found. In this case, 
                 # parses the block beginning.
                 if(True == syntaxIndicatorsMap["isInterfacePropertiesFound"] and 
-                   Errno.E_ERRNO_NONE == oResult):
+                   SdiErrno.E_ERRNO_NONE == oResult):
                 
                     oResult = self.parseSyntaxBlockOpening(
                                    self.regexConstants.CItemInterfaceProperties,
@@ -208,7 +208,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                    True == syntaxIndicatorsMap["isInterfacePropertiesFound"] and
                    False == syntaxIndicatorsMap["isOpeneningBracket"] and
                    True == syntaxIndicatorsMap["hasOpenedInterfacePropertiesBracket"] and
-                   Errno.E_ERRNO_NONE == oResult):
+                   SdiErrno.E_ERRNO_NONE == oResult):
 
                     oResult = self.__parseInterfacePropertiesBlock(
                                                             line,
@@ -222,14 +222,14 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                 if(True == self.__isUnknownSyntax(line, 
                                                   syntaxIndicatorsMap,
                                                   oResult)):
-                    oResult = Errno.E_ERRNO_UNKNOWN_SYNTAX
+                    oResult = SdiErrno.E_ERRNO_UNKNOWN_SYNTAX
             
-            if(Errno.E_ERRNO_NONE != oResult):
+            if(SdiErrno.E_ERRNO_NONE != oResult):
                 break
 
         # Checks whether the closing interface properties block exists.
         if(True == syntaxIndicatorsMap["hasOpenedInterfacePropertiesBracket"] and
-           Errno.E_ERRNO_NONE == oResult):
-            oResult = Errno.E_ERRNO_CLOSING_BRACKET_EXPECTED
+           SdiErrno.E_ERRNO_NONE == oResult):
+            oResult = SdiErrno.E_ERRNO_CLOSING_BRACKET_EXPECTED
 
         return oResult, lineNumber

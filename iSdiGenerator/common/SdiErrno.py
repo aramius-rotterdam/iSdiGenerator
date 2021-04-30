@@ -1,7 +1,5 @@
-#!/usr/bin/python3
-
 ################################################################################
-# iSdiGenerator.py
+# SdiErrno.py
 # 
 # Copyright (c) 2021 ArAmIuS de Rotterdam
 #
@@ -26,29 +24,36 @@
 ################################################################################
 # imports
 ################################################################################
-from SdiArgumentsChecker import SdiArgumentsChecker, Action
-from SdiInterfaceParser import SdiInterfaceParser
-from SdiErrorsCollector import SdiErrorsCollector
+from enum import Enum
 
 ################################################################################
-# main
+# Class SdiErrno
 ################################################################################
-if("__main__" == __name__):
-    inputArguments = {}
-
-    if(Action.E_ACTION_GENERATE == SdiArgumentsChecker.Check(inputArguments)):
-
-        interfaceParser = SdiInterfaceParser(inputArguments["sdiFileName"])
-        errorsCollector = SdiErrorsCollector()
-
-        if(True == interfaceParser.checkSyntax(errorsCollector)):
-            interfaceParser.build(inputArguments["outputDirectory"])
-        else:
-            errorsCollector.printErrors()
-            
-    elif(Action.E_ACTION_IMPORT_SDI_LIB == SdiArgumentsChecker.Check(
-                                                               inputArguments)):
-        print("import")
-    else:
-        SdiArgumentsChecker.PrintSynopsis()
-        
+class SdiErrno(Enum):
+    E_ERRNO_NONE = 0
+    E_ERRNO_UNKNOWN_SYNTAX = 1
+    E_ERRNO_DIRECTIVE_NOT_EXIST = 2
+    E_ERRNO_INCLUDE_MALFORMED = 3
+    E_ERRNO_INCLUDE_RECURSION = 4
+    E_ERRNO_INCLUDE_DUPLICATED = 5
+    E_ERRNO_INCLUDE_NOT_EXPECTED = 6
+    E_ERRNO_SDI_FILE_EXPECTED = 7
+    E_ERRNO_SDI_FILE_NOT_EXIST = 8
+    E_ERRNO_SDI_FILE_INCLUDED_MALFORMED = 9
+    E_ERRNO_SDI_FILE_INTERFACE_DUPLICATED = 10
+    E_ERRNO_PRAGMA_MALFORMED = 11
+    E_ERRNO_PRAGMA_NOT_VALID = 12
+    E_ERRNO_PRAGMA_NOT_EXPECTED = 13
+    E_ERRNO_TYPEDEF_MALFORMED = 14
+    E_ERRNO_TYPEDEF_DUPLICATED = 15
+    E_ERRNO_TYPEDEF_NOT_EXIST = 16
+    E_ERRNO_DATA_TYPE_NOT_EXIST = 17
+    E_ERRNO_OPENNING_BRACKET_NOT_EXPECTED = 18
+    E_ERRNO_CLOSING_BRACKET_EXPECTED = 19
+    E_ERRNO_CLOSING_BRACKET_NOT_EXPECTED = 20
+    E_ERRNO_STRUCT_DUPLICATED = 21
+    E_ERRNO_STRUCT_PROPERTY_NAME_MALFORMED = 22
+    E_ERRNO_STRUCT_PROPERTY_DUPLICATED = 23
+    E_ERRNO_INTERFACE_PROPERTIES_SYNTAX_DUPLICATED = 24
+    E_ERRNO_INTERFACE_PROPERTY_NAME_MALFORMED = 25
+    E_ERRNO_INTERFACE_PROPERTY_DUPLICATED = 26

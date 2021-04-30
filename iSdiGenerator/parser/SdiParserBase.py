@@ -24,8 +24,8 @@
 ################################################################################
 # imports
 ################################################################################
-from SdiRegexConstants import SdiRegexConstants
-from SdiErrorsCollector import Errno
+from iSdiGenerator.common.SdiRegexConstants import SdiRegexConstants
+from iSdiGenerator.common.SdiErrorsCollector import SdiErrno
 
 ################################################################################
 # Class SdiParserBase
@@ -78,11 +78,11 @@ class SdiParserBase:
                                 blockType,
                                 line,
                                 syntaxIndicatorsMap):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
 
         if(self.regexConstants.COpeningBracket == line and
              True == syntaxIndicatorsMap["hasOpened"+ blockType + "Bracket"]):
-             oResult = Errno.E_ERRNO_OPENNING_BRACKET_NOT_EXPECTED
+             oResult = SdiErrno.E_ERRNO_OPENNING_BRACKET_NOT_EXPECTED
         
         elif(self.regexConstants.COpeningBracket == line):
             syntaxIndicatorsMap["isOpeneningBracket"] = True

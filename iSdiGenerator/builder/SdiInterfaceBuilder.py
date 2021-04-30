@@ -25,7 +25,7 @@
 # imports
 ################################################################################
 import re
-from SdiBuilderBase import SdiBuilderBase
+from iSdiGenerator.builder.SdiBuilderBase import SdiBuilderBase
 
 ################################################################################
 # Class SdiInterfaceBuilder

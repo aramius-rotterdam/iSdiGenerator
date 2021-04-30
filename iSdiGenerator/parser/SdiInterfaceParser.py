@@ -26,11 +26,11 @@
 ################################################################################
 import re
 import os.path
-from SdiParserBase import SdiParserBase
-from SdiStructParser import SdiStructParser
-from SdiInterfacePropertiesParser import SdiInterfacePropertiesParser
-from SdiInterfaceBuilder import SdiInterfaceBuilder
-from SdiErrorsCollector import Errno
+from iSdiGenerator.common.SdiErrorsCollector import SdiErrno
+from iSdiGenerator.parser.SdiParserBase import SdiParserBase
+from iSdiGenerator.parser.SdiStructParser import SdiStructParser
+from iSdiGenerator.parser.SdiInterfacePropertiesParser import SdiInterfacePropertiesParser
+from iSdiGenerator.builder.SdiInterfaceBuilder import SdiInterfaceBuilder
 
 ################################################################################
 # Class SdiInterfaceParser
@@ -41,6 +41,7 @@ class SdiInterfaceParser(SdiParserBase):
     ############################################################################
     def __init__(self, sdiFileName):
         SdiParserBase.__init__(self)
+        self.__sdiFilePath = sdiFileName.rsplit("/", 1)[0]
         self.__sdiFileName = sdiFileName
         self.__interfaceBuilder = SdiInterfaceBuilder(self.regexConstants)
         self.__structParser = SdiStructParser(self.__interfaceBuilder)
@@ -51,7 +52,7 @@ class SdiInterfaceParser(SdiParserBase):
     # __parseIncludes
     ############################################################################
     def __parseIncludes(self, line, regexMap, syntaxIndicatorsMap):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
 
         if(None != regexMap["directiveBeginning"].match(line) and
            None == regexMap["directivePragma"].match(line)):
@@ -77,26 +78,26 @@ class SdiInterfaceParser(SdiParserBase):
                                                       line)
                                 syntaxIndicatorsMap["isInclude"] = True
                             else:
-                                oResult = Errno.E_ERRNO_INCLUDE_RECURSION
+                                oResult = SdiErrno.E_ERRNO_INCLUDE_RECURSION
                         else:
-                            oResult = Errno.E_ERRNO_INCLUDE_DUPLICATED
+                            oResult = SdiErrno.E_ERRNO_INCLUDE_DUPLICATED
 
                         if(True == syntaxIndicatorsMap["isInterfaceFound"]):
-                            oResult = Errno.E_ERRNO_INCLUDE_NOT_EXPECTED
+                            oResult = SdiErrno.E_ERRNO_INCLUDE_NOT_EXPECTED
 
                     else:
-                        oResult = Errno.E_ERRNO_SDI_FILE_EXPECTED
+                        oResult = SdiErrno.E_ERRNO_SDI_FILE_EXPECTED
 
                 else:
-                    oResult = Errno.E_ERRNO_INCLUDE_MALFORMED
+                    oResult = SdiErrno.E_ERRNO_INCLUDE_MALFORMED
 
             else:
-                oResult = Errno.E_ERRNO_DIRECTIVE_NOT_EXIST
+                oResult = SdiErrno.E_ERRNO_DIRECTIVE_NOT_EXIST
 
         elif(False == syntaxIndicatorsMap["isInterfaceFound"] and
              None != regexMap["directivePragma"].match(line)):
 
-            oResult = Errno.E_ERRNO_PRAGMA_NOT_EXPECTED
+            oResult = SdiErrno.E_ERRNO_PRAGMA_NOT_EXPECTED
 
         return oResult
 
@@ -118,7 +119,7 @@ class SdiInterfaceParser(SdiParserBase):
     # __parseIncludedSDIFiles
     ############################################################################
     def __parseIncludedSDIFiles(self, syntaxIndicatorsMap, errorsCollector):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
         includedInterfacesList = []
 
         includesMap = self.__interfaceBuilder.getIncludesMap()
@@ -127,7 +128,9 @@ class SdiInterfaceParser(SdiParserBase):
         for includedInterface in(includesMap):
             sdiFileName = includedInterface 
             sdiFileName += self.regexConstants.CExtensionSdi
-            interfaceParser = SdiInterfaceParser(sdiFileName)
+            interfaceParser = SdiInterfaceParser(self.__sdiFilePath + 
+                                                 self.regexConstants.CSlash +
+                                                 sdiFileName)
             
             if(True == interfaceParser.checkSyntax(errorsCollector)):
                 interfaceName = interfaceParser.getInterfaceName()
@@ -142,10 +145,10 @@ class SdiInterfaceParser(SdiParserBase):
                                         typeDefinition)
 
                 else:
-                    oResult = Errno.E_ERRNO_SDI_FILE_INTERFACE_DUPLICATED
+                    oResult = SdiErrno.E_ERRNO_SDI_FILE_INTERFACE_DUPLICATED
 
             else:
-                oResult = Errno.E_ERRNO_SDI_FILE_INCLUDED_MALFORMED
+                oResult = SdiErrno.E_ERRNO_SDI_FILE_INCLUDED_MALFORMED
 
         return oResult
 
@@ -153,7 +156,7 @@ class SdiInterfaceParser(SdiParserBase):
     # __parseSyntaxTypedef
     ############################################################################
     def __parseSyntaxTypedef(self, line, regexMap, syntaxIndicatorsMap):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
         syntaxTypedefMatch = regexMap["syntaxTypedef"].match(line)
         typedefSyntax = ""
 
@@ -215,7 +218,7 @@ class SdiInterfaceParser(SdiParserBase):
                             syntaxIndicatorsMap["isTypedef"] = True
 
                         else:
-                            oResult = Errno.E_ERRNO_DATA_TYPE_NOT_EXIST
+                            oResult = SdiErrno.E_ERRNO_DATA_TYPE_NOT_EXIST
 
                     elif(True == self.__interfaceBuilder.isTypeDefinitionExist(
                                           syntaxTypedefMatch.group(1).strip())):
@@ -237,13 +240,13 @@ class SdiInterfaceParser(SdiParserBase):
                         syntaxIndicatorsMap["isTypedef"] = True
 
                     else:
-                        oResult = Errno.E_ERRNO_DATA_TYPE_NOT_EXIST
+                        oResult = SdiErrno.E_ERRNO_DATA_TYPE_NOT_EXIST
 
                 else:
-                    oResult = Errno.E_ERRNO_TYPEDEF_DUPLICATED
+                    oResult = SdiErrno.E_ERRNO_TYPEDEF_DUPLICATED
 
             else:
-                oResult = Errno.E_ERRNO_TYPEDEF_MALFORMED
+                oResult = SdiErrno.E_ERRNO_TYPEDEF_MALFORMED
 
         return oResult
 
@@ -251,7 +254,7 @@ class SdiInterfaceParser(SdiParserBase):
     # __parsePragma
     ############################################################################
     def __parsePragma(self, line, regexMap, syntaxIndicatorsMap):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
 
         if(None != regexMap["directiveBeginning"].match(line)):
             
@@ -277,10 +280,10 @@ class SdiInterfaceParser(SdiParserBase):
                                 syntaxIndicatorsMap["isPragma"] = True
 
                             else:
-                                oResult = Errno.E_ERRNO_PRAGMA_NOT_VALID
+                                oResult = SdiErrno.E_ERRNO_PRAGMA_NOT_VALID
 
                         else:
-                            oResult = Errno.E_ERRNO_TYPEDEF_NOT_EXIST
+                            oResult = SdiErrno.E_ERRNO_TYPEDEF_NOT_EXIST
                             
                     if(None != completePragmaDefaultMatch):
                         
@@ -296,13 +299,13 @@ class SdiInterfaceParser(SdiParserBase):
                                 syntaxIndicatorsMap["isPragma"] = True
 
                             else:
-                                oResult = Errno.E_ERRNO_PRAGMA_NOT_VALID
+                                oResult = SdiErrno.E_ERRNO_PRAGMA_NOT_VALID
 
                         else:
-                            oResult = Errno.E_ERRNO_TYPEDEF_NOT_EXIST
+                            oResult = SdiErrno.E_ERRNO_TYPEDEF_NOT_EXIST
 
                 else:
-                    oResult = Errno.E_ERRNO_PRAGMA_MALFORMED
+                    oResult = SdiErrno.E_ERRNO_PRAGMA_MALFORMED
 
         return oResult
 
@@ -310,7 +313,7 @@ class SdiInterfaceParser(SdiParserBase):
     # __parseInterfaceBlock
     ############################################################################
     def __parseInterfaceBlock(self, line, regexMap, syntaxIndicatorsMap):
-        oResult = Errno.E_ERRNO_NONE
+        oResult = SdiErrno.E_ERRNO_NONE
 
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
@@ -321,7 +324,7 @@ class SdiInterfaceParser(SdiParserBase):
                                                 syntaxIndicatorsMap)
 
             if(False == syntaxIndicatorsMap["isTypedef"] and
-               Errno.E_ERRNO_NONE == oResult):
+               SdiErrno.E_ERRNO_NONE == oResult):
 
                 oResult = self.__parsePragma(line,
                                              regexMap,
@@ -362,7 +365,7 @@ class SdiInterfaceParser(SdiParserBase):
             False == syntaxIndicatorsMap["isInterfaceProperties"] and
             False == syntaxIndicatorsMap["isOpeneningBracket"] and
             False == syntaxIndicatorsMap["isTypedef"] and
-            Errno.E_ERRNO_NONE == errno):
+            SdiErrno.E_ERRNO_NONE == errno):
 
             oResult = True
 
@@ -435,7 +438,7 @@ class SdiInterfaceParser(SdiParserBase):
                 syntaxIndicatorsMap["isOpeneningBracket"] = False
                 syntaxIndicatorsMap["isTypedef"] = False
                 line = fileLines[lineNumber].strip()
-                errno = Errno.E_ERRNO_NONE
+                errno = SdiErrno.E_ERRNO_NONE
                 
                 # Parses comments
                 self.parseComments(line, regexMap, syntaxIndicatorsMap)
@@ -453,7 +456,7 @@ class SdiInterfaceParser(SdiParserBase):
                     # error. In this case, parses interface syntax.
                     if(False == syntaxIndicatorsMap["isInclude"] and
                        False == syntaxIndicatorsMap["isInterfaceFound"] and
-                       Errno.E_ERRNO_NONE == errno):
+                       SdiErrno.E_ERRNO_NONE == errno):
 
                         self.__parseSyntaxInterface(line, 
                                                     regexMap, 
@@ -462,7 +465,7 @@ class SdiInterfaceParser(SdiParserBase):
                     # Checks the interface was found. In this case, parses 
                     # the block beginning.
                     if(True == syntaxIndicatorsMap["isInterfaceFound"] and 
-                       Errno.E_ERRNO_NONE == errno):
+                       SdiErrno.E_ERRNO_NONE == errno):
                         
                         errno = self.parseSyntaxBlockOpening(
                                              self.regexConstants.CItemInterface,
@@ -478,7 +481,7 @@ class SdiInterfaceParser(SdiParserBase):
                        True == syntaxIndicatorsMap["isInterfaceFound"] and
                        False == syntaxIndicatorsMap["isOpeneningBracket"] and
                        True == syntaxIndicatorsMap["hasOpenedInterfaceBracket"] and
-                       Errno.E_ERRNO_NONE == errno):
+                       SdiErrno.E_ERRNO_NONE == errno):
 
                         # Checks whether the included interfaces have not
                         # loaded yet.
@@ -489,7 +492,7 @@ class SdiInterfaceParser(SdiParserBase):
 
                         # Checks whether there are not errors. In this case,
                         # parses the inteface block.
-                        if(Errno.E_ERRNO_NONE == errno):
+                        if(SdiErrno.E_ERRNO_NONE == errno):
                             errno = self.__parseInterfaceBlock(
                                                             line, 
                                                             regexMap, 
@@ -499,7 +502,7 @@ class SdiInterfaceParser(SdiParserBase):
                             # there are not errors. In this case,
                             # parses whole struct.
                             if(None != regexMap["syntaxStruct"].match(line) and
-                               Errno.E_ERRNO_NONE == errno):
+                               SdiErrno.E_ERRNO_NONE == errno):
 
                                 lineOffset = lineNumber
                                 errno, lineNumber = self.__structParser.checkSyntax(
@@ -512,7 +515,7 @@ class SdiInterfaceParser(SdiParserBase):
                     #
                     if(None != regexMap["syntaxInterfaceProperties"].match(
                                                                        line) and
-                       Errno.E_ERRNO_NONE == errno):
+                       SdiErrno.E_ERRNO_NONE == errno):
 
                         if(False == syntaxIndicatorsMap["isInterfacePropertiesFound"]):
                             lineOffset = lineNumber
@@ -523,22 +526,22 @@ class SdiInterfaceParser(SdiParserBase):
                             syntaxIndicatorsMap["isInterfaceProperties"] = True
                             syntaxIndicatorsMap["isInterfacePropertiesFound"] = True
                         else:
-                            errno = Errno.E_ERRNO_INTERFACE_PROPERTIES_SYNTAX_DUPLICATED
+                            errno = SdiErrno.E_ERRNO_INTERFACE_PROPERTIES_SYNTAX_DUPLICATED
 
                         # Checks is unknown syntax.
                         if(True == self.__isUnknownSyntax(line, 
                                                           syntaxIndicatorsMap,
                                                           errno)):
-                            errno = Errno.E_ERRNO_UNKNOWN_SYNTAX
+                            errno = SdiErrno.E_ERRNO_UNKNOWN_SYNTAX
 
                     if(True == self.__isClosingBlock(line, 
                                                      syntaxIndicatorsMap)):
                         syntaxIndicatorsMap["hasOpenedInterfaceBracket"] = False
                         
                 # Adds an error.
-                if(Errno.E_ERRNO_NONE != errno):
-                    if(Errno.E_ERRNO_SDI_FILE_INCLUDED_MALFORMED == errno or
-                       Errno.E_ERRNO_SDI_FILE_INTERFACE_DUPLICATED == errno):
+                if(SdiErrno.E_ERRNO_NONE != errno):
+                    if(SdiErrno.E_ERRNO_SDI_FILE_INCLUDED_MALFORMED == errno or
+                       SdiErrno.E_ERRNO_SDI_FILE_INTERFACE_DUPLICATED == errno):
                         errorsCollector.addError(self.__sdiFileName, 
                                                  errno, 
                                                  0)
@@ -553,12 +556,12 @@ class SdiInterfaceParser(SdiParserBase):
             # Checks whether the closing interface block exists.
             if(True == syntaxIndicatorsMap["hasOpenedInterfaceBracket"]):
                 errorsCollector.addError(self.__sdiFileName, 
-                                         Errno.E_ERRNO_CLOSING_BRACKET_EXPECTED, 
+                                         SdiErrno.E_ERRNO_CLOSING_BRACKET_EXPECTED, 
                                          lineNumber + 1)
                 oResult = False
         else:
             errorsCollector.addError(self.__sdiFileName, 
-                                     Errno.E_ERRNO_SDI_FILE_NOT_EXIST, 
+                                     SdiErrno.E_ERRNO_SDI_FILE_NOT_EXIST, 
                                      0)
             
         return oResult
