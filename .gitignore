@@ -4,3 +4,14 @@ src/__pycache__/SdiInterfaceBuilder.cpython-38.pyc
 src/__pycache__/SdiInterfaceParser.cpython-38.pyc
 src/__pycache__/SdiRegexConstants.cpython-38.pyc
 src/prueba.sdi
+src/prueba2.sdi
+src/prueba3.sdi
+src/prueba.hpp
+src/prueba2.hpp
+src/prueba3.hpp
+src/__pycache__/SdiBuilderBase.cpython-38.pyc
+src/__pycache__/SdiInterfacePropertiesParser.cpython-38.pyc
+src/__pycache__/SdiParserBase.cpython-38.pyc
+src/__pycache__/SdiStruct.cpython-38.pyc
+src/__pycache__/SdiStructBuilder.cpython-38.pyc
+src/__pycache__/SdiStructParser.cpython-38.pyc
