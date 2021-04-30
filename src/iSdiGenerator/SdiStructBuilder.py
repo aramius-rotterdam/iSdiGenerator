@@ -99,7 +99,7 @@ class SdiStructBuilder(SdiBuilderBase):
     ############################################################################
     def build(self):
         if(True == self.readTemplate(
-                                  "../share/templates/struct_hpp.py_template")):
+                               "../../share/templates/struct_hpp.py_template")):
 
             self.buildCommon()
 

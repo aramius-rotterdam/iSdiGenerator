@@ -57,7 +57,7 @@ class SdiBuilderBase:
         propertyNameRegex = re.compile(self.regexConstants.CSyntaxPropertyName)
 
         # TODO path is temporary
-        with open("../share/templates/methods_hpp.py_template", "r") as(templateFile):
+        with open("../../share/templates/methods_hpp.py_template", "r") as(templateFile):
             template = templateFile.read()
 
         if(0 < len(template) and 
@@ -81,7 +81,7 @@ class SdiBuilderBase:
         placeHoldersMap = {}
         
         # TODO path is temporary
-        with open("../share/templates/attribute_hpp.py_template", "r") as(templateFile):
+        with open("../../share/templates/attribute_hpp.py_template", "r") as(templateFile):
             template = templateFile.read()
 
         if(0 < len(template)):

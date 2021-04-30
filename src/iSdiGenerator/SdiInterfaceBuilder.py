@@ -111,7 +111,7 @@ class SdiInterfaceBuilder(SdiBuilderBase):
 
         # TODO path is temporary
         if(True == self.readTemplate(
-                               "../share/templates/interface_hpp.py_template")):
+                            "../../share/templates/interface_hpp.py_template")):
 
             self.buildCommon()
             self.placeHoldersMap["InterfaceName"] = self.__interfaceName
