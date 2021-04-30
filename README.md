@@ -20,4 +20,4 @@ Installation
 How to report bugs
 ------------------
 
-*Please report any bug...*
+*Please report any bug to [GitHub Issues](https://github.com/aramius-rotterdam/iSdiGenerator/issues)*
