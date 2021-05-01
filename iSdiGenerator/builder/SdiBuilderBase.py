@@ -28,8 +28,7 @@ import re
 import os
 import pwd
 from datetime import datetime
-
-from xdg.BaseDirectory import *
+from xdg.BaseDirectory import xdg_data_dirs
 
 ################################################################################
 # Class SdiBuilderBase
