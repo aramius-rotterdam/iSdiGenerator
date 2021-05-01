@@ -1,10 +1,4 @@
 
-bin/prueba.hpp
-bin/prueba.sdi
-bin/prueba2.hpp
-bin/prueba2.sdi
-bin/prueba3.hpp
-bin/prueba3.sdi
 iSdiGenerator/parser/__pycache__/__init__.cpython-38.pyc
 iSdiGenerator/parser/__pycache__/SdiInterfaceParser.cpython-38.pyc
 iSdiGenerator/parser/__pycache__/SdiInterfacePropertiesParser.cpython-38.pyc

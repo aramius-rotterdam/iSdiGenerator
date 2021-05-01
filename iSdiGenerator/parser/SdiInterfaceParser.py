@@ -41,8 +41,15 @@ class SdiInterfaceParser(SdiParserBase):
     ############################################################################
     def __init__(self, sdiFileName):
         SdiParserBase.__init__(self)
-        self.__sdiFilePath = sdiFileName.rsplit("/", 1)[0]
-        self.__sdiFileName = sdiFileName
+        
+        sdiFileTuple = sdiFileName.rsplit(self.regexConstants.CSlash, 1)
+        if(2 == len(sdiFileTuple)):
+            self.__sdiFilePath = sdiFileTuple[0]
+            self.__sdiFileName = sdiFileTuple[1]    
+        else:
+            self.__sdiFilePath = self.regexConstants.CDot
+            self.__sdiFileName = sdiFileTuple[0]    
+
         self.__interfaceBuilder = SdiInterfaceBuilder(self.regexConstants)
         self.__structParser = SdiStructParser(self.__interfaceBuilder)
         self.__propertiesParser= SdiInterfacePropertiesParser(
@@ -317,7 +324,7 @@ class SdiInterfaceParser(SdiParserBase):
 
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
-            True == syntaxIndicatorsMap["hasOpenedInterfaceBracket"]):
+           True == syntaxIndicatorsMap["hasOpenedInterfaceBracket"]):
 
             oResult = self.__parseSyntaxTypedef(line, 
                                                 regexMap,
@@ -358,13 +365,13 @@ class SdiInterfaceParser(SdiParserBase):
 
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
-            "" != line and
-            False == syntaxIndicatorsMap["isPragma"] and
-            False == syntaxIndicatorsMap["isInterface"] and
-            False == syntaxIndicatorsMap["isStruct"] and
-            False == syntaxIndicatorsMap["isInterfaceProperties"] and
-            False == syntaxIndicatorsMap["isOpeneningBracket"] and
-            False == syntaxIndicatorsMap["isTypedef"] and
+           "" != line and
+           False == syntaxIndicatorsMap["isPragma"] and
+           False == syntaxIndicatorsMap["isInterface"] and
+           False == syntaxIndicatorsMap["isStruct"] and
+           False == syntaxIndicatorsMap["isInterfaceProperties"] and
+           False == syntaxIndicatorsMap["isOpeneningBracket"] and
+           False == syntaxIndicatorsMap["isTypedef"] and
             SdiErrno.E_ERRNO_NONE == errno):
 
             oResult = True

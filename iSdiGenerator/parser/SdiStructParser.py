@@ -78,8 +78,8 @@ class SdiStructParser(SdiParserBase):
         
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
-            True == syntaxIndicatorsMap["hasOpenedStructBracket"] and
-            None != syntaxPropertyMatch):
+           True == syntaxIndicatorsMap["hasOpenedStructBracket"] and
+           None != syntaxPropertyMatch):
 
             propertyName = syntaxPropertyMatch.group(69)
             propertyType = syntaxPropertyMatch.group(1)
@@ -146,11 +146,11 @@ class SdiStructParser(SdiParserBase):
 
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
-            "" != line and
-            False == syntaxIndicatorsMap["isStruct"] and
-            False == syntaxIndicatorsMap["isProperty"] and
-            False == syntaxIndicatorsMap["isOpeneningBracket"] and
-            SdiErrno.E_ERRNO_NONE == errno):
+           "" != line and
+           False == syntaxIndicatorsMap["isStruct"] and
+           False == syntaxIndicatorsMap["isProperty"] and
+           False == syntaxIndicatorsMap["isOpeneningBracket"] and
+           SdiErrno.E_ERRNO_NONE == errno):
 
             oResult = True
 

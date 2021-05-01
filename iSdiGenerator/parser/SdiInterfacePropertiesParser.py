@@ -63,10 +63,10 @@ class SdiInterfacePropertiesParser(SdiParserBase):
 
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
-            "" != line and
-            False == syntaxIndicatorsMap["isInterfaceProperties"] and
-            False == syntaxIndicatorsMap["isProperty"] and
-            False == syntaxIndicatorsMap["isOpeneningBracket"] and
+           "" != line and
+           False == syntaxIndicatorsMap["isInterfaceProperties"] and
+           False == syntaxIndicatorsMap["isProperty"] and
+           False == syntaxIndicatorsMap["isOpeneningBracket"] and
             SdiErrno.E_ERRNO_NONE == errno):
 
             oResult = True
@@ -85,8 +85,8 @@ class SdiInterfacePropertiesParser(SdiParserBase):
 
         if((self.regexConstants.CClosingBracket +
             self.regexConstants.CSemiColon != line) and
-            True == syntaxIndicatorsMap["hasOpenedInterfacePropertiesBracket"] and
-            None != syntaxPropertyMatch):
+           True == syntaxIndicatorsMap["hasOpenedInterfacePropertiesBracket"] and
+           None != syntaxPropertyMatch):
 
             propertyName = syntaxPropertyMatch.group(69)
             propertyType = syntaxPropertyMatch.group(1)
@@ -111,7 +111,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                                              syntaxVectorMatch.group(1).strip())
         
                         if(None != syntaxBasicTypesMatch or
-                            True == self.__interfaceBuilder.isTypeDefinitionExist(
+                           True == self.__interfaceBuilder.isTypeDefinitionExist(
                                                    syntaxVectorMatch.group(1))):
                 
                             self.__interfaceBuilder.addProperty(propertyName, 

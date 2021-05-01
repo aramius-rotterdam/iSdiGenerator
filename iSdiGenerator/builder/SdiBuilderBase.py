@@ -29,7 +29,7 @@ import os
 import pwd
 from datetime import datetime
 
-#from xdg.BaseDirectory import *
+from xdg.BaseDirectory import *
 
 ################################################################################
 # Class SdiBuilderBase
@@ -42,11 +42,7 @@ class SdiBuilderBase:
         self.regexConstants = regexConstants
         self.template = ""
         self.placeHoldersMap = {}
-        #print(xdg_cache_home)
-        #print(xdg_config_dirs)
-        #print(xdg_config_home)
-        #print(xdg_data_dirs)
-        #print(xdg_data_home)
+        self.templatesPath = xdg_data_dirs[2] + "isdigenerator/templates/"
 
     ############################################################################
     # __buildMethods
@@ -56,7 +52,8 @@ class SdiBuilderBase:
         propertyNameRegex = re.compile(self.regexConstants.CSyntaxPropertyName)
 
         # TODO path is temporary
-        with open("../../share/templates/methods_hpp.py_template", "r") as(templateFile):
+        with open(self.templatesPath + "methods_hpp.py_template", "r") as(
+                                                                  templateFile):
             template = templateFile.read()
 
         if(0 < len(template) and 
@@ -80,7 +77,7 @@ class SdiBuilderBase:
         placeHoldersMap = {}
         
         # TODO path is temporary
-        with open("../../share/templates/attribute_hpp.py_template", "r") as(templateFile):
+        with open(self.templatesPath + "attribute_hpp.py_template", "r") as(templateFile):
             template = templateFile.read()
 
         if(0 < len(template)):

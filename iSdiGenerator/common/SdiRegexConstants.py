@@ -114,6 +114,7 @@ class SdiRegexConstants:
         self.CSemiColon = ";"
         self.CSpace = " "
         self.CSlash = "/"
+        self.CDot = "."
         self.CCarriageReturn = "\n"
         self.CItemInterface = "Interface"
         self.CItemStruct = "Struct"
