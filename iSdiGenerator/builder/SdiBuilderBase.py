@@ -50,7 +50,6 @@ class SdiBuilderBase:
         placeHoldersMap = {}
         propertyNameRegex = re.compile(self.regexConstants.CSyntaxPropertyName)
 
-        # TODO path is temporary
         with open(self.templatesPath + "methods_hpp.py_template", "r") as(
                                                                   templateFile):
             template = templateFile.read()

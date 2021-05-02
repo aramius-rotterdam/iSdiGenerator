@@ -48,7 +48,7 @@ class SdiInterfaceParser(SdiParserBase):
             self.__sdiFileName = sdiFileTuple[1]    
         else:
             self.__sdiFilePath = self.regexConstants.CDot
-            self.__sdiFileName = sdiFileTuple[0]    
+            self.__sdiFileName = sdiFileTuple[0]
 
         self.__interfaceBuilder = SdiInterfaceBuilder(self.regexConstants)
         self.__structParser = SdiStructParser(self.__interfaceBuilder)
@@ -429,9 +429,12 @@ class SdiInterfaceParser(SdiParserBase):
             "isInterfaceProperties": False,
             "isInterfacePropertiesFound": False
         }
+        sdiFileFullPath = self.__sdiFilePath
+        sdiFileFullPath += self.regexConstants.CSlash
+        sdiFileFullPath += self.__sdiFileName
 
-        if(os.path.isfile(self.__sdiFileName)):
-            interfaceFile = open(self.__sdiFileName, "r")
+        if(os.path.isfile(sdiFileFullPath)):
+            interfaceFile = open(sdiFileFullPath, "r")
             fileLines = interfaceFile.readlines()
             lineNumber = 0
 
