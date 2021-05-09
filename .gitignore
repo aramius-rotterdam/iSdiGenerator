@@ -51,3 +51,10 @@ iSdiGenerator/test/sdifiles/prueba3.sdi
 iSdiGenerator/test/sdifiles/prueba3.hpp
 dist/iSdiGenerator-0.0.4-py3-none-any.whl
 dist/iSdiGenerator-0.0.4.tar.gz
+dist/iSdiGenerator-0.0.4-py3.8.egg
+iSdiGenerator/test/sdifiles/prueba4.hpp
+iSdiGenerator/test/sdifiles/prueba4.sdi
+iSdiGenerator/test/sdifiles/prueba.cpp
+iSdiGenerator/test/sdifiles/prueba2.cpp
+iSdiGenerator/test/sdifiles/prueba3.cpp
+iSdiGenerator/test/sdifiles/prueba4.cpp
