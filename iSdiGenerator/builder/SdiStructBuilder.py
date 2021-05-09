@@ -39,7 +39,8 @@ class SdiStructBuilder(SdiBuilderBase):
         SdiBuilderBase.__init__(self, regexConstants)
         self.__structsMap = {}
         self.__typedefsSyntaxMap = {}
-        self.__builtStructs = ""
+        self.__builtStructsHpp = ""
+        self.__builtStructsCpp = ""
 
     ############################################################################
     # __buildTypes
@@ -86,18 +87,19 @@ class SdiStructBuilder(SdiBuilderBase):
         return oResult
 
     ############################################################################
-    # addTypedef
+    # addTypedefSyntax
     ############################################################################
-    def addTypedef(self, structName, typedefSyntax):
+    def addTypedefSyntax(self, structName, typedefSyntax):
         if(not structName in(self.__typedefsSyntaxMap)):
             self.__typedefsSyntaxMap[structName] = []
 
         self.__typedefsSyntaxMap[structName].append(typedefSyntax)
 
     ############################################################################
-    # build
+    # __buildHpp
     ############################################################################
-    def build(self):
+    def __buildHpp(self):
+
         if(True == self.readTemplate(
                                 self.templatesPath + "struct_hpp.py_template")):
 
@@ -108,11 +110,51 @@ class SdiStructBuilder(SdiBuilderBase):
                 self.buildProperties(self.regexConstants.CItemStruct,
                                      self.__structsMap[structName].getPropertiesMap())
                 self.__buildTypes(structName)
-                self.__builtStructs += self.template.format(
+                self.__builtStructsHpp += self.template.format(
                                                          **self.placeHoldersMap)
 
     ############################################################################
-    # getBuiltStructs
+    # __buildCpp
     ############################################################################
-    def getBuiltStructs(self):
-        return self.__builtStructs
+    def __buildCpp(self, interfaceName, originalTypesMap):
+        propertiesCounter = 0
+
+        if(True == self.readTemplate(
+                self.templatesPath + "struct_cpp.py_template")):
+
+            for structName in(self.__structsMap):
+                
+                if(0 < propertiesCounter):
+                    self.__builtStructsCpp += (2 * self.regexConstants.CCarriageReturn)
+
+                propertiesMap = self.__structsMap[structName].getPropertiesMap()
+
+                self.placeHoldersMap["InterfaceName"] = interfaceName
+                self.placeHoldersMap["StructName"] = structName
+                methodsRegistration = self.buildMembersRegistration(structName,
+                                              originalTypesMap,
+                                              propertiesMap)
+                self.placeHoldersMap["MethodsRegistration"] = methodsRegistration                                     
+                self.__builtStructsCpp += self.template.format(
+                                                         **self.placeHoldersMap)
+
+                propertiesCounter += 1
+
+    ############################################################################
+    # build
+    ############################################################################
+    def build(self, interfaceName, originalTypesMap):
+        self.__buildHpp()
+        self.__buildCpp(interfaceName, originalTypesMap)
+
+    ############################################################################
+    # getBuiltStructsHpp
+    ############################################################################
+    def getBuiltStructsHpp(self):
+        return self.__builtStructsHpp
+
+    ############################################################################
+    # getBuiltStructsCpp
+    ############################################################################
+    def getBuiltStructsCpp(self):
+        return self.__builtStructsCpp

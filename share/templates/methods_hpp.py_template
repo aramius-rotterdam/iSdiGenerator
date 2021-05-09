@@ -5,7 +5,7 @@
 {Indented}     * @date       {GenerationDate}
 {Indented}     * @return     Returns the value from '{PropertyName}'
 {Indented}     */
-{Indented}    const {PropertyType} &get{MethodName}(void)
+{Indented}    const {PropertyType} &get{MethodName}(void) const
 {Indented}    {{
 {Indented}        return {PropertyName};
 {Indented}    }}

@@ -88,7 +88,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
            True == syntaxIndicatorsMap["hasOpenedInterfacePropertiesBracket"] and
            None != syntaxPropertyMatch):
 
-            propertyName = syntaxPropertyMatch.group(69)
+            propertyName = syntaxPropertyMatch.group(70)
             propertyType = syntaxPropertyMatch.group(1)
             syntaxBasicTypesMatch = regexMap["syntaxBasicTypes"].match(
                                                                    propertyType)
@@ -115,7 +115,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                                                    syntaxVectorMatch.group(1))):
                 
                             self.__interfaceBuilder.addProperty(propertyName, 
-                                                            propertyType)
+                                                                propertyType)
                             syntaxIndicatorsMap["isProperty"] = True
 
                         else:
@@ -125,7 +125,7 @@ class SdiInterfacePropertiesParser(SdiParserBase):
                                                          propertyType.strip())):
 
                         self.__interfaceBuilder.addProperty(propertyName, 
-                                                        propertyType)
+                                                            propertyType)
                         syntaxIndicatorsMap["isProperty"] = True
                     else:
                         oResult = SdiErrno.E_ERRNO_DATA_TYPE_NOT_EXIST

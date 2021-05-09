@@ -81,7 +81,7 @@ class SdiStructParser(SdiParserBase):
            True == syntaxIndicatorsMap["hasOpenedStructBracket"] and
            None != syntaxPropertyMatch):
 
-            propertyName = syntaxPropertyMatch.group(69)
+            propertyName = syntaxPropertyMatch.group(70)
             propertyType = syntaxPropertyMatch.group(1)
             syntaxBasicTypesMatch = regexMap["syntaxBasicTypes"].match(
                                                                    propertyType)
@@ -258,14 +258,14 @@ class SdiStructParser(SdiParserBase):
         return self.__structBuilder.isStructExist(structName)
 
     ############################################################################
-    # addTypedef
+    # addTypedefSyntax
     ############################################################################
-    def addTypedef(self, typeDefinition, typedefSyntax):
-        self.__structBuilder.addTypedef(typeDefinition, typedefSyntax)
+    def addTypedefSyntax(self, typeDefinition, typedefSyntax):
+        self.__structBuilder.addTypedefSyntax(typeDefinition, typedefSyntax)
 
     ############################################################################
     # build
     ############################################################################
-    def build(self):
-        self.__structBuilder.build()
-        return self.__structBuilder.getBuiltStructs()
+    def build(self, interfaceName, originalTypesMap):
+        self.__structBuilder.build(interfaceName, originalTypesMap)
+        return self.__structBuilder.getBuiltStructsHpp(), self.__structBuilder.getBuiltStructsCpp()

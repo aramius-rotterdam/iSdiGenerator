@@ -6,12 +6,34 @@
      * @version    0.1
      * @date       {GenerationDate}
      */
-    class {StructName}
+    class {StructName} : public SdiReflectionBase<{StructName}>
     {{
     public:
+        /**
+         * Generated default constructor.
+         */
+        {StructName}(void)
+         : SdiReflectionBase(*this)
+        {{
+            registerMembers();
+        }}
+
+        /**
+         * Generated virtual destroyer.
+         */
+        virtual ~{StructName}(void)
+        {{
+
+        }}
+
 {StructMethods}
 
     private:
+        /**
+         * @inheritDoc
+         */
+        virtual void registerMembers(void);
+
 {StructAttributes}
     }};
 

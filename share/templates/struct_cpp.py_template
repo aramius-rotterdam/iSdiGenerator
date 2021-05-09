@@ -1,0 +1,4 @@
+void {InterfaceName}::{StructName}::registerMembers(void)
+{{
+{MethodsRegistration}
+}}

@@ -1,0 +1,7 @@
+    SdiReflectionBase::MemberName member{MemberName_Capatalize}("{MemberName}");
+
+    registerMethods<{DataType}>(member{MemberName_Capatalize},
+                                SdiReflectionMemberBase::{MembeType},
+                                SdiReflectionMemberBase::{MemberDataType},
+                                &{ItemName}::get{MemberName_Capatalize}, 
+                                &{ItemName}::set{MemberName_Capatalize});

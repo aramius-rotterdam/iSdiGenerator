@@ -117,6 +117,8 @@ class SdiArgumentsChecker:
 
                     if(True == os.path.isdir(argumentsList[0])):
 
+                        inputArguments["outputDirectory"] = argumentsList[0]
+
                         if(False == isForced):
                             oResult = SdiAppAction.E_APP_ACTION_IMPORT_SDI_LIB
                         else:

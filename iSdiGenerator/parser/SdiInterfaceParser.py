@@ -123,6 +123,40 @@ class SdiInterfaceParser(SdiParserBase):
             self.__interfaceBuilder.addInterfaceName(interfaceName)
 
     ############################################################################
+    # __getFinalTypeDefinition
+    ############################################################################
+    def __getFinalTypeDefinition(self, typeDefinition, interfaceName):
+        oResult = ""
+        includedSdiTypeRegex = re.compile(self.regexConstants.CIncludedSdiType)
+
+        if(None != includedSdiTypeRegex.match(typeDefinition)):
+            oResult = typeDefinition
+        else:
+            oResult = interfaceName
+            oResult += self.regexConstants.CColon
+            oResult += self.regexConstants.CColon
+            oResult += typeDefinition
+
+        return oResult
+
+    ############################################################################
+    # __getFinalOriginalType
+    ############################################################################
+    def __getFinalOriginalType(self, originalType, interfaceName):
+        oResult = ""
+        includedSdiTypeRegex = re.compile(self.regexConstants.CIncludedSdiType)
+
+        if(None != includedSdiTypeRegex.match(originalType)):
+            oResult = originalType
+        else:
+            oResult = interfaceName
+            oResult += self.regexConstants.CColon
+            oResult += self.regexConstants.CColon
+            oResult += originalType
+
+        return oResult
+
+    ############################################################################
     # __parseIncludedSDIFiles
     ############################################################################
     def __parseIncludedSDIFiles(self, syntaxIndicatorsMap, errorsCollector):
@@ -138,7 +172,7 @@ class SdiInterfaceParser(SdiParserBase):
             interfaceParser = SdiInterfaceParser(self.__sdiFilePath + 
                                                  self.regexConstants.CSlash +
                                                  sdiFileName)
-            
+
             if(True == interfaceParser.checkSyntax(errorsCollector)):
                 interfaceName = interfaceParser.getInterfaceName()
                 
@@ -146,10 +180,28 @@ class SdiInterfaceParser(SdiParserBase):
                     includedInterfacesList.append(interfaceName)
 
                     for typeDefinition in(interfaceParser.getTypesDefinitionList()):
+
+                        finalTypeDefinition = self.__getFinalTypeDefinition(
+                                             typeDefinition, 
+                                             interfaceParser.getInterfaceName())
+
                         self.__interfaceBuilder.addTypeDefinition(
-                                        interfaceParser.getInterfaceName() + 
-                                        "::" +
-                                        typeDefinition)
+                                                            finalTypeDefinition)
+
+                    originalTypesMap = interfaceParser.getOriginalTypesMap()
+                    for typeDefinition in(originalTypesMap):
+
+                        finalTypeDefinition = self.__getFinalTypeDefinition(
+                                             typeDefinition, 
+                                             interfaceParser.getInterfaceName())
+
+                        finalOriginalType = self.__getFinalOriginalType(
+                                              originalTypesMap[typeDefinition], 
+                                              interfaceName)
+
+                        self.__interfaceBuilder.addOriginalType(
+                                                            finalTypeDefinition,
+                                                            finalOriginalType)
 
                 else:
                     oResult = SdiErrno.E_ERRNO_SDI_FILE_INTERFACE_DUPLICATED
@@ -190,8 +242,8 @@ class SdiInterfaceParser(SdiParserBase):
                     
                         self.__interfaceBuilder.addTypeDefinition(
                                                                  typeDefinition)
-                        self.__interfaceBuilder.addTypedef(typeDefinition, 
-                                                           typedefSyntax)
+                        self.__interfaceBuilder.addTypedefSyntax(typeDefinition, 
+                                                                 typedefSyntax)
                         self.__interfaceBuilder.addOriginalType(
                                                  typeDefinition,
                                                  syntaxBasicTypesMatch.group(1))
@@ -213,14 +265,20 @@ class SdiInterfaceParser(SdiParserBase):
                                True == self.__structParser.isStructExist(
                                                    syntaxVectorMatch.group(1))):
 
-                                self.__structParser.addTypedef(
+                                self.__structParser.addTypedefSyntax(
                                                      syntaxVectorMatch.group(1),
                                                      typedefSyntax)
+                                self.__interfaceBuilder.addOriginalType(
+                                                     typeDefinition,
+                                                     syntaxVectorMatch.group(1))
                             else:
 
-                                self.__interfaceBuilder.addTypedef(
+                                self.__interfaceBuilder.addTypedefSyntax(
                                                                  typeDefinition, 
                                                                  typedefSyntax)
+                                self.__interfaceBuilder.addOriginalType(
+                                                     typeDefinition,
+                                                     syntaxVectorMatch.group(0))
                                                                
                             syntaxIndicatorsMap["isTypedef"] = True
 
@@ -233,16 +291,23 @@ class SdiInterfaceParser(SdiParserBase):
                         self.__interfaceBuilder.addTypeDefinition(
                                                                  typeDefinition)
 
-                        if(True == self.__structParser.isStructExist(
-                                          syntaxTypedefMatch.group(1).strip())):
+                        dataType = syntaxTypedefMatch.group(1).strip()
+                        if(True == self.__structParser.isStructExist(dataType)):
 
-                            self.__structParser.addTypedef(
-                                            syntaxTypedefMatch.group(1).strip(),
-                                            typedefSyntax)
+                            self.__structParser.addTypedefSyntax(dataType,
+                                                                 typedefSyntax)
+                            self.__interfaceBuilder.addOriginalType(
+                                                                 typeDefinition,
+                                                                 dataType)
+                            
                         else:
 
-                            self.__interfaceBuilder.addTypedef(typeDefinition, 
-                                                               typedefSyntax)
+                            self.__interfaceBuilder.addTypedefSyntax(
+                                                                 typeDefinition, 
+                                                                 typedefSyntax)
+                            self.__interfaceBuilder.addOriginalType(
+                                                                 typeDefinition,
+                                                                 dataType)  
 
                         syntaxIndicatorsMap["isTypedef"] = True
 
@@ -589,9 +654,20 @@ class SdiInterfaceParser(SdiParserBase):
         return self.__interfaceBuilder.getTypesDefinitionList()
 
     ############################################################################
+    # getOriginalTypesMap
+    ############################################################################
+    def getOriginalTypesMap(self):
+        return self.__interfaceBuilder.getOriginalTypesMap()
+
+    ############################################################################
     # build
     ############################################################################
     def build(self, outputDirectory):
-        self.__interfaceBuilder.build(self.__structParser.build(),
+        builtStructHpp, builtStructCpp = self.__structParser.build(
+                                  self.__interfaceBuilder.getInterfaceName(), 
+                                  self.__interfaceBuilder.getOriginalTypesMap())
+
+        self.__interfaceBuilder.build(builtStructHpp,
+                                      builtStructCpp,
                                       self.__sdiFileName,
                                       outputDirectory)

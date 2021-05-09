@@ -74,7 +74,6 @@ class SdiBuilderBase:
     def __buildAttribute(self, indented, propertyName, propertyType):
         placeHoldersMap = {}
         
-        # TODO path is temporary
         with open(self.templatesPath + "attribute_hpp.py_template", "r") as(templateFile):
             template = templateFile.read()
 
@@ -84,6 +83,31 @@ class SdiBuilderBase:
             placeHoldersMap["PropertyType"] = propertyType
             oResult = template.format(**placeHoldersMap)
 
+        return oResult
+
+    ############################################################################
+    # __isBasicDataType
+    ############################################################################
+    def __isBasicDataType(self, typeDefinition, originalTypesMap):
+        oResult = False
+        includedSdiTypeRegex = re.compile(self.regexConstants.CIncludedSdiType)
+        syntaxBasicTypesRegex = re.compile(
+                                          self.regexConstants.CSyntaxBasicTypes)
+
+        while(typeDefinition in(originalTypesMap)):
+            typeDefinition = originalTypesMap[typeDefinition]
+
+        if(None != syntaxBasicTypesRegex.match(typeDefinition)):
+            oResult = True
+        else:
+            includedSdiTypeMatch = includedSdiTypeRegex.match(typeDefinition)
+            
+            if(None != includedSdiTypeMatch):
+                if(None != syntaxBasicTypesRegex.match(
+                                                includedSdiTypeMatch.group(2))):
+                    oResult = True
+
+        
         return oResult
 
     ############################################################################
@@ -116,6 +140,64 @@ class SdiBuilderBase:
                                                     propertyName,
                                                     propertiesMap[propertyName])
             propertiesCounter += 1
+
+    ############################################################################
+    # buildMembersRegistration
+    ############################################################################
+    def buildMembersRegistration(self,
+                                 itemName,
+                                 originalTypesMap,
+                                 propertiesMap):
+        oResult = ""
+        placeHoldersMap = {}
+        syntaxVectorRegex = re.compile(self.regexConstants.CSyntaxVector)
+        syntaxPropertyNameRegex = re.compile(
+                                        self.regexConstants.CSyntaxPropertyName)
+        propertiesCounter = 0
+        
+        with open(self.templatesPath + "methods_registration_cpp.py_template", "r") as(templateFile):
+            template = templateFile.read()
+
+        if(0 < len(template)):
+
+            for propertyName in(propertiesMap):
+
+                if(0 < propertiesCounter):
+                    oResult += (2 * self.regexConstants.CCarriageReturn)
+
+                memberType = self.regexConstants.CMemberTypeSimple
+                memberDataType = self.regexConstants.CMemberDataTypeBasic
+                finalPropertyType = propertiesMap[propertyName]
+                while(finalPropertyType in(originalTypesMap)):
+                    finalPropertyType = originalTypesMap[finalPropertyType]
+
+                syntaxVectorMatch = syntaxVectorRegex.match(finalPropertyType)
+                if(None != syntaxVectorMatch):
+
+                    memberType = self.regexConstants.CMemberTypeVector
+                    isBasicType = self.__isBasicDataType(
+                                                     syntaxVectorMatch.group(1),
+                                                     originalTypesMap)
+                else:
+                    isBasicType = self.__isBasicDataType(finalPropertyType,
+                                                         originalTypesMap)
+                                                    
+                if(False == isBasicType):
+                    memberDataType = self.regexConstants.CMemberDataTypeStruct
+
+                memberName = syntaxPropertyNameRegex.sub("\\g<Property>", 
+                                                         propertyName)
+                placeHoldersMap["MemberName_Capatalize"] = memberName.capitalize()
+                placeHoldersMap["MemberName"] = memberName
+                placeHoldersMap["DataType"] = propertiesMap[propertyName]
+                placeHoldersMap["MembeType"] = memberType
+                placeHoldersMap["MemberDataType"] = memberDataType
+                placeHoldersMap["ItemName"] = itemName
+                oResult += template.format(**placeHoldersMap)
+
+                propertiesCounter += 1
+
+        return oResult
 
     ############################################################################
     # readTemplate

@@ -28,6 +28,15 @@ from iSdiGenerator.common.SdiAppAction import SdiAppAction
 from iSdiGenerator.common.SdiArgumentsChecker import SdiArgumentsChecker
 from iSdiGenerator.common.SdiErrorsCollector import SdiErrorsCollector
 from iSdiGenerator.parser.SdiInterfaceParser import SdiInterfaceParser
+from xdg.BaseDirectory import xdg_data_dirs
+import os
+
+################################################################################
+# __importLibSdi
+################################################################################
+def __importLibSdi(outputDirectory):
+    libSdiPath = xdg_data_dirs[2] + "isdigenerator/libsdi/"
+    os.system("cp " + libSdiPath + "*.hpp " + outputDirectory + "/")
 
 ################################################################################
 # main
@@ -46,10 +55,11 @@ def main():
                 interfaceParser.build(inputArguments["outputDirectory"])
             else:
                 errorsCollector.printErrors()
+                exit(2)
             
         elif(SdiAppAction.E_APP_ACTION_IMPORT_SDI_LIB == SdiArgumentsChecker.Check(
                                                                inputArguments)):
-            print("import")
+            __importLibSdi(inputArguments["outputDirectory"])
         else:
             SdiArgumentsChecker.PrintSynopsis()
         

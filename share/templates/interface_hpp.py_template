@@ -1,6 +1,6 @@
 /**
  * Gerenarted by iSdiGenerator (DO NOT MODIFY)
- * @file: {InterfaceName}.hpp
+ * @file: {FileName}.hpp
  * @author: {Author} 
  * @date: {GenerationDate}
  */
@@ -10,6 +10,7 @@
 
 {IncludedInterfaces}
 #include <SdiNumber.hpp>
+#include <SdiReflectionBase.hpp>
 #include <string>
 #include <vector>
 #include <limits>
@@ -21,7 +22,7 @@
  * @version    0.1
  * @date       {GenerationDate}
  */
-class {InterfaceName} {InhiretedInterface}
+class {InterfaceName} : public SdiReflectionBase<{InterfaceName}>{InhiretedInterface}
 {{
 public:
     /**
@@ -29,9 +30,37 @@ public:
      */
 {InterfaceTypes}
 {InterfaceStructs}
+
+    /**
+     * Generated default constructor.
+     */
+    {InterfaceName}(void)
+     : SdiReflectionBase(*this)
+    {{
+        registerMembers();
+    }}
+
+    /**
+     * Generated virtual destroyer.
+     */
+    virtual ~{InterfaceName}(void)
+    {{
+
+    }}
+
 {InterfaceMethods}
 
+    /**
+     * Serialize a SDI interface.
+     */
+    void serialize(void);
+
 private:
+    /**
+     * @inheritDoc
+     */
+    virtual void registerMembers(void);
+
 {InterfaceAttributes}
 }};
 

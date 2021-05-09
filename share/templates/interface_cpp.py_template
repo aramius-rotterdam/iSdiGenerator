@@ -1,0 +1,20 @@
+/**
+ * Gerenarted by iSdiGenerator (DO NOT MODIFY)
+ * @file: {FileName}.cpp
+ * @author: {Author}
+ * @date: {GenerationDate}
+ */
+
+#include <{FileName}.hpp>
+
+{StructsInitialize}
+
+void {InterfaceName}::registerMembers(void)
+{{
+{MethodsRegistration}
+}}
+
+void {InterfaceName}::serialize(void)
+{{
+
+}}

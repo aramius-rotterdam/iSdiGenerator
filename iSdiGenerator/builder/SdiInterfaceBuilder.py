@@ -81,7 +81,7 @@ class SdiInterfaceBuilder(SdiBuilderBase):
             
             typedef += (4 * self.regexConstants.CSpace)
             typedef += self.__typedefsSyntaxMap[typeDefinition]
-            
+
             if(typeDefinition in(self.__specialTypesMap)):
 
                 if(typeDefinition in(self.__originalTypesMap)):
@@ -101,29 +101,51 @@ class SdiInterfaceBuilder(SdiBuilderBase):
             file.write(fileContent)
 
     ############################################################################
-    # __generateHpp
+    # __buildHpp
     ############################################################################
-    def __buildHpp(self, builtStructs, fileName, outputDirectory):
+    def __buildHpp(self, builtStructsHpp, fileName, outputDirectory):
 
         filePath = outputDirectory + self.regexConstants.CSlash 
         filePath += fileName.replace(self.regexConstants.CExtensionSdi, 
                                      self.regexConstants.CExtensionHpp)
 
-        # TODO path is temporary
         if(True == self.readTemplate(
                              self.templatesPath + "interface_hpp.py_template")):
 
             self.buildCommon()
+            self.placeHoldersMap["FileName"] = fileName[:-4]
             self.placeHoldersMap["InterfaceName"] = self.__interfaceName
             self.placeHoldersMap["InterfaceName_UpperCase"] = self.__interfaceName.upper()
             self.placeHoldersMap["InhiretedInterface"] = ""
             self.__buildIncludes()
-            self.placeHoldersMap["InterfaceStructs"] = builtStructs
+            self.placeHoldersMap["InterfaceStructs"] = builtStructsHpp
             self.__buildTypes()
-            self.placeHoldersMap["InterfaceMethods"] = ""
-            self.placeHoldersMap["InterfaceAttributes"] = ""
             self.buildProperties(self.regexConstants.CItemInterface,
                                  self.__propertiesMap)
+
+            self.__writeFile(filePath, 
+                             self.template.format(**self.placeHoldersMap))
+
+    ############################################################################
+    # __buildCpp
+    ############################################################################
+    def __buildCpp(self, builtStructsCpp, fileName, outputDirectory):
+
+        filePath = outputDirectory + self.regexConstants.CSlash 
+        filePath += fileName.replace(self.regexConstants.CExtensionSdi, 
+                                     self.regexConstants.CExtensionCpp)
+
+        if(True == self.readTemplate(
+                             self.templatesPath + "interface_cpp.py_template")):
+
+            self.buildCommon()
+            self.placeHoldersMap["FileName"] = fileName[:-4]
+            self.placeHoldersMap["StructsInitialize"] = builtStructsCpp
+            self.placeHoldersMap["InterfaceName"] = self.__interfaceName
+            self.placeHoldersMap["MethodsRegistration"] = self.buildMembersRegistration(
+                                                        self.__interfaceName,
+                                                        self.__originalTypesMap,
+                                                        self.__propertiesMap)
 
             self.__writeFile(filePath, 
                              self.template.format(**self.placeHoldersMap))
@@ -183,9 +205,9 @@ class SdiInterfaceBuilder(SdiBuilderBase):
         return typeDefinition in(self.__typedefsSyntaxMap)
 
     ############################################################################
-    # addTypedef
+    # addTypedefSyntax
     ############################################################################
-    def addTypedef(self, typeDefinition, typedefSyntax):
+    def addTypedefSyntax(self, typeDefinition, typedefSyntax):
         self.__typedefsSyntaxMap[typeDefinition] = typedefSyntax
 
     ############################################################################
@@ -201,15 +223,21 @@ class SdiInterfaceBuilder(SdiBuilderBase):
         self.__originalTypesMap[typeDefinition] = originalType
 
     ############################################################################
-    # addSdiNumber
+    # getOriginalTypesMap
+    ############################################################################
+    def getOriginalTypesMap(self):
+        return self.__originalTypesMap
+
+    ############################################################################
+    # addSdiNumberByRange
     ############################################################################    
     def addSdiNumberByRange(self, typeDefinition, minNumber, maxNumber):
         sdiNumber = ""
 
         if(typeDefinition in(self.__originalTypesMap)):
-
+        
             if(typeDefinition in(self.__specialTypesMap)):
-
+            
                 sdiNumberRegex = re.compile(self.regexConstants.CSdiNumber)
                 sdiNumberMatch = sdiNumberRegex.match(
                                          self.__specialTypesMap[typeDefinition])
@@ -237,7 +265,7 @@ class SdiInterfaceBuilder(SdiBuilderBase):
             self.__specialTypesMap[typeDefinition] = sdiNumber
 
     ############################################################################
-    # addSdiNumber
+    # addSdiNumberByDefaultNumber
     ############################################################################    
     def addSdiNumberByDefaultNumber(self, typeDefinition, defultNumber):
         sdiNumber = ""
@@ -288,6 +316,11 @@ class SdiInterfaceBuilder(SdiBuilderBase):
     ############################################################################
     # build
     ############################################################################
-    def build(self, builtStructs, fileName, outputDirectory):
-        self.__buildHpp(builtStructs, fileName, outputDirectory)
+    def build(self, 
+              builtStructsHpp, 
+              builtStructsCpp, 
+              fileName, 
+              outputDirectory):
+        self.__buildHpp(builtStructsHpp, fileName, outputDirectory)
+        self.__buildCpp(builtStructsCpp, fileName, outputDirectory)
         

@@ -50,34 +50,33 @@ class SdiRegexConstants:
         
         syntaxBasicNumericTypesMap = {
             "UChar": "(unsigned([ \\t]+)char)",
-            "Char": "(char)",
             "SChar": "(signed([ \\t]+)char)",
-            "UShort": "(unsigned([ \\t]+)short)",
+            "Char": "(char)",
             "UShortInt": "(unsigned([ \\t]+)short([ \\t]+)int)",
-            "Short": "(short)",
-            "ShortInt": "(short([ \\t]+)int)",
-            "SShort": "(signed([ \\t]+)short)",
+            "UShort": "(unsigned([ \\t]+)short)",
             "SShortInt": "(signed([ \\t]+)short([ \\t]+)int)",
+            "SShort": "(signed([ \\t]+)short)",
+            "ShortInt": "(short([ \\t]+)int)",
+            "Short": "(short)",
             "UInt": "(unsigned([ \\t]+)int)",
-            "Int": "(int)",
             "SInt": "(signed([ \\t]+)int)",
+            "Int": "(int)",
+            "ULongInt": "(unsigned([ \\t]+)long([ \\t]+)int)",            
             "ULong": "(unsigned([ \\t]+)long)",
-            "ULongInt": "(unsigned([ \\t]+)long([ \\t]+)int)",
-            "Long": "(long)",
-            "LongInt": "(long([ \\t]+)int)",
-            "SLong": "(signed([ \\t]+)long)",
             "SLongInt": "(signed([ \\t]+)long([ \\t]+)int)",
+            "SLong": "(signed([ \\t]+)long)",
+            "LongInt": "(long([ \\t]+)int)",            
+            "Long": "(long)",
+            "ULLongInt": "(unsigned([ \\t]+)long([ \\t]+)long([ \\t]+)int)",            
             "ULLong": "(unsigned([ \\t]+)long([ \\t]+)long)",
-            "ULLongInt": "(unsigned([ \\t]+)long([ \\t]+)long([ \\t]+)int)",
-            "LLong": "(long([ \\t]+)long)",
-            "LLongInt": "(long([ \\t]+)long([ \\t]+)int)",
-            "SLLong": "(signed([ \\t]+)long([ \\t]+)long)",
             "SLLongInt": "(signed([ \\t]+)long([ \\t]+)long([ \\t]+)int)",
+            "SLLong": "(signed([ \\t]+)long([ \\t]+)long)",            
+            "LLongInt": "(long([ \\t]+)long([ \\t]+)int)",
+            "LLong": "(long([ \\t]+)long)",
             "Float": "(float)",
-            "Double": "(double)",
             "LDouble": "(long([ \\t]+)double)",
-            "Size": "(__SIZE_TYPE__)",
-            "StdString": "(std::string)"
+            "Double": "(double)",
+            "Size": "(\\_\\_SIZE_TYPE\\_\\_)"
         }
         typeCounter = 0
         syntaxBasicNumericTypes = "("
@@ -87,10 +86,11 @@ class SdiRegexConstants:
             syntaxBasicNumericTypes += syntaxBasicNumericTypesMap[key]
             typeCounter += 1
         syntaxBasicNumericTypes += ")"
+        syntaxBasicTypes = "((bool)|" + syntaxBasicNumericTypes + "|(std\\:\\:string))"
         self.CSyntaxBasicTypes = "^("
-        self.CSyntaxBasicTypes += "((bool)|" + syntaxBasicNumericTypes + ")"
+        self.CSyntaxBasicTypes += syntaxBasicTypes
         self.CSyntaxBasicTypes += ")$"
-        self.CSyntaxVector = "std::vector<(.+)>"
+        self.CSyntaxVector = "std\\:\\:vector<(.+)>"
 
         sdiNumberRange = "(([0-9]+)|"
         sdiNumberRange += "(std\\:\\:numeric\\_limits\\<"
@@ -104,14 +104,18 @@ class SdiRegexConstants:
         self.CSdiNumber += "(?P<MinNumber>" + sdiNumberRange + "\\, )"
         self.CSdiNumber += "(?P<MaxNumber>" + sdiNumberRange + "\\, )"
         self.CSdiNumber += "(?P<DefaultNumber>([0-9]+)\\>)"
-        self.CSyntaxProperty = "((bool)|" + syntaxBasicNumericTypes + "|(" + self.CSyntaxVector + ")|([\\_A-Za-z0-9]+))"
+        syntaxDataType = "(" + syntaxBasicTypes + "|(" + self.CSyntaxVector + ")|([\\_A-Za-z0-9]+))"
+        self.CSyntaxProperty = syntaxDataType
         self.CSyntaxProperty += "([ \t]+)([\\_A-Za-z0-9]+)([ \t]*)(\\;)$"
         self.CSyntaxPropertyName = "((?P<Prefix>m\\_)(?P<Property>[A-Za-z0-9]+))"
         self.CSyntaxInterfaceProperties = "properties([ \\t]*)([\\{]*)$"
+        self.CIncludedSdiType = "(?P<InterfaceName>[A-Za-z0-9]+\\:\\:)"
+        self.CIncludedSdiType += syntaxDataType
 
         self.COpeningBracket = "{"
         self.CClosingBracket = "}"
         self.CSemiColon = ";"
+        self.CColon = ":"
         self.CSpace = " "
         self.CSlash = "/"
         self.CDot = "."
@@ -122,6 +126,10 @@ class SdiRegexConstants:
         self.CExtensionSdi = ".sdi"
         self.CExtensionHpp = ".hpp"
         self.CExtensionCpp = ".cpp"
+        self.CMemberTypeSimple = "E_MEMBER_TYPE_SIMPLE"
+        self.CMemberTypeVector = "E_MEMBER_TYPE_VECTOR"
+        self.CMemberDataTypeBasic = "E_DATA_TYPE_BASIC"
+        self.CMemberDataTypeStruct = "E_DATA_TYPE_STRUCT"
         
 
     
