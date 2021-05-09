@@ -1,0 +1,24 @@
+// Comment 1
+
+/* Comment 2 */
+
+/**
+ *
+ * Comment 3
+ *
+ */
+
+interface RobotConfiguration
+{
+    typedef unsigned short int    tipo1 ;
+    typedef std::vector<std::string>    tipo2 ;
+    typedef std::vector<int> tipo3;
+    typedef std::vector<tipo1> tipoList;
+    typedef tipoList tipoList2;
+    //typedef aaa prueba4;
+
+    //asdf
+    #pragma   tipo1  [default: 200]
+    #pragma    tipo1   [10-512]
+    
+};

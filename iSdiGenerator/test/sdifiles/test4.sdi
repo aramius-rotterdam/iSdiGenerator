@@ -1,0 +1,7 @@
+interface LoggerConfiguration
+{
+    properties
+    {
+        bool m_isValid;
+    };
+};

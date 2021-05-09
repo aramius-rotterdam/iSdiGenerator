@@ -1,0 +1,70 @@
+// Comment 1
+
+/* Comment 2 */
+
+#include <test2.sdi>
+
+/**
+ *
+ * Comment 3
+ *
+ */
+
+interface SensorConfiguration
+{
+    typedef unsigned short int    prueba ;
+    typedef std::vector<std::string>    prueba1 ;
+    typedef std::vector<int> prueba3;
+    typedef std::vector<prueba> pruebaList    ;
+    typedef pruebaList pruebaList2     ;
+    #pragma   prueba  [default: 200]
+    #pragma    prueba   [10-512]
+
+    typedef RobotConfiguration::tipoList tipoList;
+    typedef MainConfiguration::tipoList2 tipoList2;
+
+    struct SensorProperties
+    {
+        bool                 m_isValid        ;
+        pruebaList2 m_pruebaList;
+        prueba           m_prueba ;
+        short int m_num;
+        std::vector<short int> m_vector1;
+        std::vector<prueba> m_vector2;
+    };
+
+    struct State
+    {
+        bool                 m_isValid;
+        unsigned short          m_status ;
+    };
+
+    typedef std::vector<State>    pruebaStateList ;
+
+    struct EmptyClass
+    {
+
+    };
+
+    typedef EmptyClass WrapperEmptyClass;
+
+    properties 
+    {
+        EmptyClass m_p;
+        tipoList2 m_p2;
+    };
+
+    struct EmptyClass2
+    {
+
+    };
+
+    typedef EmptyClass2 WrapperEmptyClass2;
+
+    struct EmptyClass3
+    {
+
+    };
+
+    typedef EmptyClass3 WrapperEmptyClass3;
+};
