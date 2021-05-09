@@ -30,8 +30,9 @@
  * @author     ArAmIuS de Rotterdam
  * @version    0.1
  * @date       2021-04-25
+ * @tparam     conditionV the condition value.
  */
-template<bool condition>
+template<bool conditionV>
 class SdiNumberGuard;
 
 template<>

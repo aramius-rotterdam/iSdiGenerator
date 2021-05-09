@@ -25,7 +25,20 @@
 #define SDINUMBER_HPP_
 
 #include <SdiNumberGuard.hpp>
+#include <sstream>
 
+/**
+ * @class      SdiNumber
+ * @brief      This template is used to define a custom data type for numbers, 
+ *             providing features like ranges and default values.
+ * @author     ArAmIuS de Rotterdam
+ * @version    0.1
+ * @date       2021-04-25
+ * @tparam     NumberT the data type for the number.
+ * @tparam     minNumberV the minimum value of the number.
+ * @tparam     maxNumberV the maximum value of the number.
+ * @tparam     defaultNumberV the default value of the number.
+ */
 template<typename NumberT, 
          NumberT  minNumberV, 
          NumberT  maxNumberV, 
@@ -73,7 +86,7 @@ public:
     * @author     ArAmIuS de Rotterdam
     * @version    0.1
     * @date       2021-04-25
-    * @param      NumberT the value.
+    * @param      iValue the integral value.
     */
     explicit SdiNumber(const NumberT &iValue)
      : m_value(checkRange(iValue))
@@ -90,7 +103,11 @@ public:
     * @author     ArAmIuS de Rotterdam
     * @version    0.1
     * @date       2021-04-25
-    * @param      NumberT the value.
+    * @tparam     NumberT2 the data type for the number.
+    * @tparam     minNumberV2 the minimum value of the number.
+    * @tparam     maxNumberV2 the maximum value of the number.
+    * @tparam     defaultNumberV2 the default value of the number.
+    * @param      iSdiNumber the SdiNumber.
     */
     template<typename NumberT2, 
              NumberT2 minNumberV2, 
@@ -143,10 +160,10 @@ public:
     {
         if(&iOtherInstance != this)
         {
-            this->m_value = checkRange(iOtherInstance.m_value)
+            this->m_value = checkRange(iOtherInstance.m_value);
         }
 
-        return(this->m_value)
+        return(this->m_value);
     }
 
     /**
@@ -199,21 +216,23 @@ private:
     * @author     ArAmIuS de Rotterdam
     * @version    0.1
     * @date       2021-04-25
+    * @exception  std::exception
     * @param      iValue the value.
     */
     inline NumberT checkRange(const NumberT &iValue)
     {
-        if(lessCheck(iValue, minNumberV) || greaterCheck(iValue, maxNumberV))
+        if(true == lessCheck(iValue, minNumberV) || 
+           true == greaterCheck(iValue, maxNumberV))
         {
             std::stringstream numberRangeError;
 
             numberRangeError << "Value: " 
-                              << iValue
-                              << " outside limits ["
-                              << minNumberV
-                              << ","
-                              << maxNumberV
-                              << "]"
+                             << iValue
+                             << " outside limits ["
+                             << minNumberV
+                             << ","
+                             << maxNumberV
+                             << "]";
 
             throw std::exception(numberRangeError.str().c_str());
         }
