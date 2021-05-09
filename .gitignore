@@ -48,3 +48,11 @@ dist/iSdiGenerator-0.0.4.tar.gz
 dist/iSdiGenerator-0.0.4-py3.8.egg
 dist/iSdiGenerator-0.0.5-py3-none-any.whl
 dist/iSdiGenerator-0.0.5.tar.gz
+iSdiGenerator/test/sdifiles/test1.cpp
+iSdiGenerator/test/sdifiles/test1.hpp
+iSdiGenerator/test/sdifiles/test2.cpp
+iSdiGenerator/test/sdifiles/test2.hpp
+iSdiGenerator/test/sdifiles/test3.cpp
+iSdiGenerator/test/sdifiles/test3.hpp
+iSdiGenerator/test/sdifiles/test4.cpp
+iSdiGenerator/test/sdifiles/test4.hpp
